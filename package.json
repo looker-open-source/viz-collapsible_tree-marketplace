@@ -6,10 +6,12 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "watch": "webpack --config webpack.config.js --watch --progress",
+    "prepare": "bin/bootstrap",
+    "build": "env NODE_OPTIONS='--openssl-legacy-provider' webpack --config webpack.config.js",
+    "watch": "env NODE_OPTIONS='--openssl-legacy-provider' webpack --config webpack.config.js --watch --progress",
+    "format": "prettier --ignore-path .gitignore --write src",
     "lint": "tslint --project tsconfig.json --format stylish 'src/**/*.ts'",
-    "lint-fix": "tslint --fix --project tsconfig.json  --format stylish 'src/**/*.ts'",
+    "lint-fix": "tslint --fix --project tsconfig.json --format stylish 'src/**/*.ts'",
     "test": "jest"
   },
   "dependencies": {
@@ -25,7 +27,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.6.1",
-    "jest": "^29.6.1",
+    "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
     "webpack-cli": "^3.3.11"
   }
