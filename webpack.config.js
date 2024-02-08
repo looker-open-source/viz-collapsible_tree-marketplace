@@ -8,7 +8,7 @@ var webpackConfig = {
     collapsible_tree: './src/collapsible_tree/collapsible_tree.ts',
   },
   output: {
-    filename: 'collapsible_tree.js',
+    filename: 'bundle.js',
     path: path.join(path.resolve(__dirname), '/dist'),
     library: '[name]',
     libraryTarget: 'umd',
