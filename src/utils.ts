@@ -1,11 +1,11 @@
-import d3 from 'd3';
+import {format} from 'd3';
 
 import {VisConfig, VisQueryResponse, VisualizationDefinition} from './types';
 import {fromSheetsToD3Format} from './currency_formatter';
 
 export const formatType = (valueFormat: string) => {
-  const format = fromSheetsToD3Format(valueFormat);
-  return d3.format(format);
+  const formattedData = fromSheetsToD3Format(valueFormat);
+  return format(formattedData);
 };
 
 export const handleErrors = (
