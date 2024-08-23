@@ -1,5 +1,6 @@
 #  Collapsible Tree
 
+**This is not an officially supported Google product.**
 
 This diagram displays a [treemap](https://en.wikipedia.org/wiki/Tree_structure), showing a hierarchy of a series of dimensions.
 
