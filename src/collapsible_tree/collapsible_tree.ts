@@ -3,13 +3,11 @@ declare var looker: Looker;
 
 import * as d3 from 'd3';
 import {getEllipsizedText} from '../text';
-import {handleErrors} from '../utils';
+import {handleErrors, burrow} from '../utils';
 
 import {
-  Row,
   Looker,
   Link,
-  Cell,
   LookerChartUtils,
   VisualizationDefinition,
 } from '../types';
@@ -19,53 +17,6 @@ interface CollapsibleTreeVisualization extends VisualizationDefinition {
   svg?: any;
 }
 
-function descend(obj: any, depth: number = 0) {
-  const arr: any[] = [];
-  for (const k in obj) {
-    if (k === '__data') {
-      continue;
-    }
-    const child: any = {
-      name: k,
-      depth,
-      children: descend(obj[k], depth + 1),
-    };
-    if ('__data' in obj[k]) {
-      child.data = obj[k].__data;
-    }
-    arr.push(child);
-  }
-  return arr;
-}
-
-function burrow(
-  table: any,
-  taxonomy: any[],
-  linkMap: Map<string, Cell | Link[] | undefined>
-) {
-  // create nested object
-  const obj: any = {};
-
-  table.forEach((row: Row) => {
-    // start at root
-    let layer = obj;
-    // create children as nested objects
-    taxonomy.forEach((t: any) => {
-      const key = row[t.name].value;
-      linkMap.set(key, row[t.name].links);
-      layer[key] = key in layer ? layer[key] : {};
-      layer = layer[key];
-    });
-    layer.__data = row;
-  });
-
-  return {
-    name: 'root',
-    children: descend(obj, 1),
-    depth: 0,
-    links: linkMap,
-  };
-}
 
 const vis: CollapsibleTreeVisualization = {
   id: 'collapsible_tree', // id/label not required, but nice for testing and keeping manifests in sync
