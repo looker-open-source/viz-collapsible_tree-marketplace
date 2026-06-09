@@ -13,14 +13,13 @@ import {
   LookerChartUtils,
   VisualizationDefinition,
 } from '../types';
-import {keys, values} from 'd3';
 declare var LookerCharts: LookerChartUtils;
 
 interface CollapsibleTreeVisualization extends VisualizationDefinition {
   svg?: any;
 }
 
-function descend(obj: any, taxonomy: any[], depth: number = 0) {
+function descend(obj: any, depth: number = 0) {
   const arr: any[] = [];
   for (const k in obj) {
     if (k === '__data') {
@@ -29,7 +28,7 @@ function descend(obj: any, taxonomy: any[], depth: number = 0) {
     const child: any = {
       name: k,
       depth,
-      children: descend(obj[k], taxonomy, depth + 1),
+      children: descend(obj[k], depth + 1),
     };
     if ('__data' in obj[k]) {
       child.data = obj[k].__data;
@@ -62,7 +61,7 @@ function burrow(
 
   return {
     name: 'root',
-    children: descend(obj, taxonomy, 1),
+    children: descend(obj, 1),
     depth: 0,
     links: linkMap,
   };
@@ -111,10 +110,10 @@ const vis: CollapsibleTreeVisualization = {
       let i = 0;
       const nodeColors = {
         children:
-          (config && config.color_with_children) ||
+          config?.color_with_children ??
           this.options.color_with_children.default,
         empty:
-          (config && config.color_empty) || this.options.color_empty.default,
+          config?.color_empty ?? this.options.color_empty.default,
       };
       const textSize = 10;
       const nodeRadius = 4;
@@ -129,7 +128,7 @@ const vis: CollapsibleTreeVisualization = {
         .attr('width', width + margin.right + margin.left)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+        .attr('transform', `translate(${margin.left},${margin.top})`);
 
       // declares a tree layout and assigns the size
       const treemap = d3.tree().size([height, width]);
@@ -200,9 +199,7 @@ const vis: CollapsibleTreeVisualization = {
           .enter()
           .append('g')
           .attr('class', 'node')
-          .attr('transform', (d: any) => {
-            return 'translate(' + source.y0 + ',' + source.x0 + ')';
-          });
+          .attr('transform', (d: any) => `translate(${source.y0},${source.x0})`);
 
         // Add Circle for the nodes
         nodeEnter
@@ -215,15 +212,11 @@ const vis: CollapsibleTreeVisualization = {
         nodeEnter
           .append('text')
           .attr('dy', '.35em')
-          .attr('x', (d: any) => {
-            return d.children || d._children ? -textSize : textSize;
-          })
-          .attr('text-anchor', (d: any) => {
-            return d.children || d._children ? 'end' : 'start';
-          })
+          .attr('x', (d: any) => d.children || d._children ? -textSize : textSize)
+          .attr('text-anchor', (d: any) => d.children || d._children ? 'end' : 'start')
           .style('cursor', 'pointer')
           .style('font-family', "'Open Sans', Helvetica, sans-serif")
-          .style('font-size', textSize + 'px')
+          .style('font-size', `${textSize}px`)
           .html((d: any) => {
             const ellipsizedText = getEllipsizedText(
               d.data.name,
@@ -236,7 +229,7 @@ const vis: CollapsibleTreeVisualization = {
           .on('click', (d: any) => {
             LookerCharts.Utils.openDrillMenu({
               links: linkMap.get(d.data.name),
-              event: event,
+              event: d3.event,
             });
           });
 
@@ -247,9 +240,7 @@ const vis: CollapsibleTreeVisualization = {
         nodeUpdate
           .transition()
           .duration(duration)
-          .attr('transform', (d: any) => {
-            return 'translate(' + d.y + ',' + d.x + ')';
-          });
+          .attr('transform', (d: any) => `translate(${d.y},${d.x})`);
 
         // Update the node attributes and style
         nodeUpdate
@@ -267,9 +258,7 @@ const vis: CollapsibleTreeVisualization = {
           .exit()
           .transition()
           .duration(duration)
-          .attr('transform', (d: any) => {
-            return 'translate(' + source.y + ',' + source.x + ')';
-          })
+          .attr('transform', (d: any) => `translate(${source.y},${source.x})`)
           .remove();
 
         // On exit reduce the node circles size to 0
@@ -324,7 +313,7 @@ const vis: CollapsibleTreeVisualization = {
       };
 
       // Collapse after the second level
-      rootNode.children.forEach(collapse);
+      rootNode.children?.forEach(collapse);
 
       // Update the root node
       updateTree(rootNode);

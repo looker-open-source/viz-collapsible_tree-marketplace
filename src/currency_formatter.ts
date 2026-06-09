@@ -9,14 +9,7 @@
  */
 export function getCurrencySymbol(valueFormat: string) {
   const c = valueFormat.charAt(0);
-  switch (c) {
-    case '$':
-    case '£':
-    case '€':
-      return c;
-    default:
-      return '';
-  }
+  return ['$', '£', '€'].includes(c) ? c : '';
 }
 
 /**
@@ -38,14 +31,11 @@ export function getFormatSpan(valueFormat: string) {
  */
 export function getFormatSuffix(valueFormat: string) {
   const c = valueFormat.slice(-1);
-  switch (c) {
-    case '%':
-      return '%';
-    case '0':
-      return 'f';
-    default:
-      return '';
-  }
+  const suffixMap: Record<string, string> = {
+    '%': '%',
+    '0': 'f',
+  };
+  return suffixMap[c] ?? '';
 }
 
 /**
@@ -81,37 +71,3 @@ export function fromSheetsToD3Format(valueFormat: string) {
   return `${currency}${grouper}.${n}${suffix}`;
 }
 
-/** Original implementation for the currency formatter.
- *
- * @deprecated */
-export function fromSheetsToD3FormatOriginal(valueFormat: string) {
-  if (!valueFormat) return undefined;
-  let format = '';
-  switch (valueFormat.charAt(0)) {
-    case '$':
-      format += '$';
-      break;
-    case '£':
-      format += '£';
-      break;
-    case '€':
-      format += '€';
-      break;
-  }
-  if (valueFormat.indexOf(',') > -1) {
-    format += ',';
-  }
-  const splitValueFormat = valueFormat.split('.');
-  format += '.';
-  format += splitValueFormat.length > 1 ? splitValueFormat[1].length : 0;
-
-  switch (valueFormat.slice(-1)) {
-    case '%':
-      format += '%';
-      break;
-    case '0':
-      format += 'f';
-      break;
-  }
-  return format;
-}

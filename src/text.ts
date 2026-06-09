@@ -11,14 +11,14 @@
 export const getEllipsizedText = (
   text: string,
   nodePos: number,
-  parentNodePos: number,
+  parentNodePos: number = 0,
   fontSize: number
 ) => {
   // Observed width ratio of `W` and `f` (i.e 3 / 2)
   const charHWRatio = 3 / 2;
   const minCharSize = 6;
 
-  const distance = Math.abs(nodePos - (parentNodePos || 0));
+  const distance = Math.abs(nodePos - parentNodePos);
   const charSize = fontSize / charHWRatio || minCharSize;
 
   let maxCharWidth = Math.floor(distance / charSize);

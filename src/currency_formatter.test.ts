@@ -2,7 +2,6 @@ import {expect, describe, test} from '@jest/globals';
 
 import {
   fromSheetsToD3Format,
-  fromSheetsToD3FormatOriginal,
   getCurrencySymbol,
   getGroupingSymbol,
   getFormatSpan,
@@ -18,13 +17,11 @@ describe('fromSheetsToD3Format', () => {
       ['$#,##.##0%', '$,.4%'],
     ];
     for (const [from, to] of matches) {
-      expect(fromSheetsToD3FormatOriginal(from)).toBe(to);
       expect(fromSheetsToD3Format(from)).toBe(to);
     }
   });
 
-  test('should return empty string when no value format provided unlike original implementation', () => {
-    expect(fromSheetsToD3FormatOriginal('')).toBe(undefined);
+  test('should return empty string when no value format provided', () => {
     expect(fromSheetsToD3Format('')).toBe('');
   });
 });
