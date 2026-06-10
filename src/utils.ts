@@ -90,7 +90,7 @@ function descend(obj: any, depth: number = 0) {
       depth,
       children: descend(obj[k], depth + 1),
     };
-    if ('__data' in obj[k]) {
+    if (obj[k] && typeof obj[k] === 'object' && '__data' in obj[k]) {
       child.data = obj[k].__data;
     }
     arr.push(child);
@@ -111,10 +111,13 @@ export function burrow(
     let layer = obj;
     // create children as nested objects
     taxonomy.forEach((t: any) => {
-      const key = row[t.name].value;
-      linkMap.set(key, row[t.name].links);
-      layer[key] = key in layer ? layer[key] : {};
-      layer = layer[key];
+      const cell = row[t.name];
+      if (cell) {
+        const key = cell.value;
+        linkMap.set(key, cell.links);
+        layer[key] = key in layer ? layer[key] : {};
+        layer = layer[key];
+      }
     });
     layer.__data = row;
   });

@@ -70,8 +70,8 @@ const vis: CollapsibleTreeVisualization = {
       const nodeRadius = 4;
       const duration = 750;
       const margin = {top: 10, right: 10, bottom: 10, left: 10};
-      const width = element.clientWidth - margin.left - margin.right;
-      const height = element.clientHeight - margin.top - margin.bottom;
+      const width = Math.max(0, element.clientWidth - margin.left - margin.right);
+      const height = Math.max(0, element.clientHeight - margin.top - margin.bottom);
       const linkMap: Map<string, Link[]> = new Map();
       const nested = burrow(data, queryResponse.fields.dimension_like, linkMap);
 
@@ -268,7 +268,7 @@ const vis: CollapsibleTreeVisualization = {
 
       // Update the root node
       updateTree(rootNode);
-      doneRendering();
+      setTimeout(doneRendering, duration);
     } catch (error) {
       console.error('Collapsible Tree Rendering Error:', error);
 
