@@ -8,6 +8,7 @@ var webpackConfig = {
     collapsible_tree: './src/collapsible_tree/collapsible_tree.ts',
   },
   output: {
+    hashFunction: 'sha256',
     filename: 'bundle.js',
     path: path.join(path.resolve(__dirname), '/dist'),
     library: '[name]',
