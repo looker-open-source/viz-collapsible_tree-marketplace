@@ -26,6 +26,17 @@ describe('getEllipsizedText', () => {
     ).toMatch(/\.{3}$/);
   });
 
+  test('should handle undefined parentNodePos', () => {
+    expect(
+      getEllipsizedText(
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, laudantium!',
+        200,
+        undefined,
+        16
+      )
+    ).toMatch(/\.{3}$/);
+  });
+
   test('should not ellipsize short text', () => {
     expect(getEllipsizedText('Lorem ipsum dolor sit amet', 500, 100, 16)).toBe(
       'Lorem ipsum dolor sit amet'

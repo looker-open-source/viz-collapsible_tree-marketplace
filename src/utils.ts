@@ -5,7 +5,14 @@
 
 import {format} from 'd3';
 
-import {VisConfig, VisQueryResponse, VisualizationDefinition} from './types';
+import {
+  VisConfig,
+  VisQueryResponse,
+  VisualizationDefinition,
+  Row,
+  Cell,
+  Link,
+} from './types';
 import {fromSheetsToD3Format} from './currency_formatter';
 
 export const formatType = (valueFormat: string) => {
@@ -76,3 +83,54 @@ export const handleErrors = (
     )
   );
 };
+
+function descend(obj: any, depth: number = 0) {
+  const arr: any[] = [];
+  for (const k in obj) {
+    if (k === '__data') {
+      continue;
+    }
+    const child: any = {
+      name: k,
+      depth,
+      children: descend(obj[k], depth + 1),
+    };
+    if (obj[k] && typeof obj[k] === 'object' && '__data' in obj[k]) {
+      child.data = obj[k].__data;
+    }
+    arr.push(child);
+  }
+  return arr;
+}
+
+export function burrow(
+  table: any,
+  taxonomy: any[],
+  linkMap: Map<string, Cell | Link[] | undefined>
+) {
+  // create nested object
+  const obj: any = {};
+
+  table.forEach((row: Row) => {
+    // start at root
+    let layer = obj;
+    // create children as nested objects
+    taxonomy.forEach((t: any) => {
+      const cell = row[t.name];
+      if (cell) {
+        const key = cell.value;
+        linkMap.set(key, cell.links);
+        layer[key] = key in layer ? layer[key] : {};
+        layer = layer[key];
+      }
+    });
+    layer.__data = row;
+  });
+
+  return {
+    name: 'root',
+    children: descend(obj, 1),
+    depth: 0,
+    links: linkMap,
+  };
+}
