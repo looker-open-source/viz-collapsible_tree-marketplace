@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.6.2](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/compare/v9.6.1...v9.6.2) (2026-06-26)
+
+
+### Bug Fixes
+
+* Optimize collapsible tree viz codebase and upgrade packages  ([#47](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/issues/47)) ([80f023e](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/commit/80f023e81a42b21f14bc1fb748a46b4c056d0be2))
+
 ## [9.6.1](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/compare/v9.6.0...v9.6.1) (2026-05-22)
 
 
