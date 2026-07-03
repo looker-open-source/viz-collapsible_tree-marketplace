@@ -1,3 +1,8 @@
+// © 2019 Google LLC.  All rights reserved.
+//
+// This software is subject to the Google Cloud Terms of Service, as
+// modified by the "General Software Terms" of the Google Cloud Service Specific Terms, available at: https://cloud.google.com/terms/service-terms.
+
 /**
  * Returns an ellipsized text that fits in between a calculated distance
  * (not overlapping on other nodes)
@@ -11,14 +16,14 @@
 export const getEllipsizedText = (
   text: string,
   nodePos: number,
-  parentNodePos: number,
+  parentNodePos: number = 0,
   fontSize: number
 ) => {
   // Observed width ratio of `W` and `f` (i.e 3 / 2)
   const charHWRatio = 3 / 2;
   const minCharSize = 6;
 
-  const distance = Math.abs(nodePos - (parentNodePos || 0));
+  const distance = Math.abs(nodePos - parentNodePos);
   const charSize = fontSize / charHWRatio || minCharSize;
 
   let maxCharWidth = Math.floor(distance / charSize);
