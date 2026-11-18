@@ -79,4 +79,35 @@ describe('burrow', () => {
     expect(nodeB.name).toBe('B');
     expect(nodeB.data).toBe(row1);
   });
+
+  test('should safely handle Object.prototype keys, XSS strings, and null cell values', () => {
+    const linkMap = new Map<string, any>();
+    const taxonomy = [{name: 'dim1'}, {name: 'dim2'}, {name: 'dim3'}];
+    const xssPayload =
+      '</title><image href="x:x" onerror="window.__XSS__=1" />';
+    const drillLinks = [{label: 'Drill', type: 'url', type_label: 'URL', url: '#'}];
+
+    const row1: Row = {
+      dim1: {value: '__proto__', links: []},
+      dim2: {value: 'constructor', links: []},
+      dim3: {value: xssPayload, links: drillLinks},
+    };
+    const row2: Row = {
+      dim1: {value: 'toString', links: []},
+      dim2: {value: null as any, links: drillLinks},
+      dim3: {value: 'leaf', links: []},
+    };
+
+    const result = burrow([row1, row2], taxonomy, linkMap);
+
+    expect(result.children.map((n: any) => n.name)).toEqual([
+      '__proto__',
+      'toString',
+    ]);
+    expect(result.children[0].children[0].name).toBe('constructor');
+    expect(result.children[0].children[0].children[0].name).toBe(xssPayload);
+    expect(linkMap.get(xssPayload)).toBe(drillLinks);
+    expect(result.children[1].children[0].name).toBe('null');
+    expect(linkMap.get('null')).toBe(drillLinks);
+  });
 });
