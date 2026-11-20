@@ -108,8 +108,8 @@ export function burrow(
   taxonomy: any[],
   linkMap: Map<string, Cell | Link[] | undefined>
 ) {
-  // create nested object
-  const obj: any = {};
+  // create nested null-prototype object to prevent Object.prototype key collisions
+  const obj: any = Object.create(null);
 
   table.forEach((row: Row) => {
     // start at root
@@ -118,9 +118,11 @@ export function burrow(
     taxonomy.forEach((t: any) => {
       const cell = row[t.name];
       if (cell) {
-        const key = cell.value;
+        const key = String(cell.value);
         linkMap.set(key, cell.links);
-        layer[key] = key in layer ? layer[key] : {};
+        layer[key] = Object.prototype.hasOwnProperty.call(layer, key)
+          ? layer[key]
+          : Object.create(null);
         layer = layer[key];
       }
     });

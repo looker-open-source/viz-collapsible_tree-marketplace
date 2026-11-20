@@ -77,10 +77,11 @@ const vis: CollapsibleTreeVisualization = {
       const margin = {top: 10, right: 10, bottom: 10, left: 10};
       const width = Math.max(0, element.clientWidth - margin.left - margin.right);
       const height = Math.max(0, element.clientHeight - margin.top - margin.bottom);
-      const linkMap: Map<string, Link[]> = new Map();
+      const linkMap: Map<string, Link[] | undefined> = new Map();
       const nested = burrow(data, queryResponse.fields.dimension_like, linkMap);
 
-      const svg = this.svg!.html('')
+      this.svg!.selectAll('*').remove();
+      const svg = this.svg!
         .attr('width', width + margin.right + margin.left)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
@@ -165,29 +166,34 @@ const vis: CollapsibleTreeVisualization = {
           .on('click', click);
 
         // Add labels for the nodes
-        nodeEnter
+        const nodeText = nodeEnter
           .append('text')
           .attr('dy', '.35em')
-          .attr('x', (d: any) => d.children || d._children ? -textSize : textSize)
-          .attr('text-anchor', (d: any) => d.children || d._children ? 'end' : 'start')
+          .attr('x', (d: any) =>
+            d.children || d._children ? -textSize : textSize
+          )
+          .attr('text-anchor', (d: any) =>
+            d.children || d._children ? 'end' : 'start'
+          )
           .style('cursor', 'pointer')
           .style('font-family', "'Open Sans', Helvetica, sans-serif")
           .style('font-size', `${textSize}px`)
-          .html((d: any) => {
-            const ellipsizedText = getEllipsizedText(
-              d.data.name,
+          .text((d: any) =>
+            getEllipsizedText(
+              String(d.data.name ?? ''),
               d.y,
               d.parent?.y,
               textSize
-            );
-            return `<title>${d.data.name}</title>${ellipsizedText}`;
-          })
+            )
+          )
           .on('click', (d: any) => {
             LookerCharts.Utils.openDrillMenu({
               links: linkMap.get(d.data.name),
               event: d3.event,
             });
           });
+
+        nodeText.append('title').text((d: any) => String(d.data.name ?? ''));
 
         // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
