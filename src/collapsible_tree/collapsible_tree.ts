@@ -77,7 +77,7 @@ const vis: CollapsibleTreeVisualization = {
       const margin = {top: 10, right: 10, bottom: 10, left: 10};
       const width = Math.max(0, element.clientWidth - margin.left - margin.right);
       const height = Math.max(0, element.clientHeight - margin.top - margin.bottom);
-      const linkMap: Map<string, Link[]> = new Map();
+      const linkMap: Map<string, Link[] | undefined> = new Map();
       const nested = burrow(data, queryResponse.fields.dimension_like, linkMap);
 
       this.svg!.selectAll('*').remove();
