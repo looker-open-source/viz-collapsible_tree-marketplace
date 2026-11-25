@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.6.3](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/compare/v9.6.2...v9.6.3) (2026-11-25)
+
+
+### Bug Fixes
+
+* render node labels and tooltips as plain text ([#63](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/issues/63)) ([75db3e9](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/commit/75db3e9748fa43fe93332c15ce4a6aced554002e))
+
 ## [9.6.2](https://github.com/looker-open-source/viz-collapsible_tree-marketplace/compare/v9.6.1...v9.6.2) (2026-06-26)
 
 
